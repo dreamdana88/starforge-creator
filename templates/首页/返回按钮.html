@@ -1,0 +1,22 @@
+```
+<!DOCTYPE html>
+<html lang="zh-CN">
+<body>
+<style>
+/* ── 定制：建议小胶囊形，色系与介绍首页呼应；尺寸紧凑，不撑高 iframe ── */
+body { margin: 0; padding: 0; }
+.ci-back { cursor: pointer; display: inline-flex; align-items: center; }
+</style>
+<button class="ci-back" id="ci-back">‹ 返回介绍</button>
+<script>
+/* ── 固定：返回 swipe[0]，不可修改 ── */
+document.getElementById('ci-back').addEventListener('click', async function() {
+  await setChatMessages(
+    [{ message_id: 0, swipe_id: 0 }],
+    { refresh: 'affected' }
+  );
+});
+</script>
+</body>
+</html>
+```

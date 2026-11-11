@@ -1,0 +1,103 @@
+```
+<!DOCTYPE html>
+<html lang="zh-CN">
+<body>
+<style>
+/* ── 定制：按女主角愿景与角色世界观设计视觉风格 ──────────────────
+   必须定义以下类名：
+     .ci-raw          隐藏的数据容器（务必设置 display:none）
+     .ci-wrap         页面主容器（width:100%; box-sizing:border-box; 不设 max-width、不居中、不设固定高度）
+     [data-swipe-to]  开场白入口元素（务必设置 cursor:pointer）
+   遵循 prompts/41_首页美化.md「美学规范」
+   所有类名使用 ci- 前缀以避免样式污染
+   布局必须适配移动端，禁止横向溢出
+──────────────────────────────────────────────────────── */
+body { margin: 0; padding: 0; }
+.ci-raw { display: none; }
+.ci-wrap { width: 100%; box-sizing: border-box; }
+[data-swipe-to] { cursor: pointer; }
+</style>
+
+<!-- 固定：隐藏数据容器，存储正则捕获的原始内容 -->
+<div class="ci-raw">$1</div>
+<!-- 定制：页面主容器，JS 动态填充内容 -->
+<div class="ci-wrap"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* ── 固定：读取原始数据 ── */
+  var raw = document.querySelector('.ci-raw').textContent;
+
+  /* ── 固定：解析工具函数 ──
+     用法：extract('字段名', raw) → 提取 [字段名]…[/字段名] 的内容，字段不存在时返回空字符串
+  ── */
+  function extract(tag, text) {
+    var m = text.match(new RegExp('\\[' + tag + '\\]([\\s\\S]*?)\\[\\/' + tag + '\\]'));
+    return m ? m[1].trim() : '';
+  }
+
+  /* ── 定制：按本次 CardIntro 实际包含的字段按需调用 ──
+     示例：
+       var title  = extract('标题',   raw);
+       var intro  = extract('简介',   raw);
+     未填写的字段返回 ''，构建 HTML 时判断为空就不渲染
+     HTML / JS 中不硬编码任何具体值；想展示的信息先在 CardIntro 数据里加 [字段名]，再用 extract() 读取
+  ── */
+
+  /* ── 固定：解析角色档案（支持多个 [角色] 块） ── */
+  var characters = [];
+  var charReg = /\[角色\]([\s\S]*?)\[\/角色\]/g;
+  var cm;
+  while ((cm = charReg.exec(raw)) !== null) {
+    var b = cm[1];
+    characters.push({
+      name : (b.match(/name\s*:\s*(.+)/)  || [])[1] || '',
+      quote: (b.match(/quote\s*:\s*(.+)/) || [])[1] || '',
+      desc : extract('desc', b)
+    });
+  }
+
+  /* ── 固定：解析开场白列表（支持任意数量 [开场] 块） ── */
+  var openings = [];
+  var opReg = /\[开场\]([\s\S]*?)\[\/开场\]/g;
+  var om;
+  while ((om = opReg.exec(raw)) !== null) {
+    var ob = om[1];
+    var idM = ob.match(/id\s*:\s*(\d+)/);
+    if (!idM) continue;
+    openings.push({
+      id   : parseInt(idM[1], 10),
+      title: ((ob.match(/title\s*:\s*(.+)/) || [])[1] || '开场白').trim(),
+      desc : ((ob.match(/desc\s*:\s*(.+)/)  || [])[1] || '').trim(),
+      img  : ((ob.match(/img\s*:\s*(\S+)/)  || [])[1] || '').trim()
+    });
+  }
+
+  /* ── 定制：根据解析数据构建 HTML 并注入 .ci-wrap ──
+     可用：extract 解析的字段 / characters（name、quote、desc）/ openings（id、title、desc、img）
+     - 开场白入口元素必须带 data-swipe-to="opening.id"
+     - img 存在时渲染图片卡，否则纯文字卡
+     - 单人卡（characters.length === 1）：用 getCharAvatarPath('current') 取头像，放在角色档案区
+     - 多人卡 / 大世界卡：按女主角需求决定是否用头像
+  ── */
+  var wrap = document.querySelector('.ci-wrap');
+  var html = '';
+  /* ... */
+  wrap.innerHTML = html;
+
+  /* ── 固定：绑定开场白跳转，不可修改 ── */
+  document.querySelectorAll('[data-swipe-to]').forEach(function(el) {
+    el.addEventListener('click', async function() {
+      await setChatMessages(
+        [{ message_id: 0, swipe_id: parseInt(this.getAttribute('data-swipe-to'), 10) }],
+        { refresh: 'affected' }
+      );
+    });
+  });
+
+});
+</script>
+</body>
+</html>
+```

@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://testingcf.jsdelivr.net/gh/StageDog/tavern_sync/dist/schema/settings.zh.json
+# 星辰工坊写卡：只用 bundle（离线打包），不 push/pull/watch。
+# 用法：node tools/tavern_sync.mjs bundle <配置名>
+# 每张作品在「配置」下加一块，路径指向本地 works/<作品>/，作品目录不进本仓库。
+
+# 提示词中出现此名字会被替换成 <user> 宏；写卡阶段统一直接写 {{user}}，这里填一个不会撞名的占位
+user名称: __STARFORGE_NO_USER__
+
+配置: {}

@@ -1,0 +1,25 @@
+[
+  {"query": "我想写一张古风江湖的角色卡，男主是表面纨绔实际是暗卫统领的世子，BG，从哪开始？", "should_trigger": true},
+  {"query": "新作品 雾港，开工表单已填好", "should_trigger": true},
+  {"query": "帮我捏个配角，萧逸尘身边那个话很少的贴身侍卫", "should_trigger": true},
+  {"query": "这张卡的世界书帮我搭一下，现代都市异能设定，三个势力", "should_trigger": true},
+  {"query": "把这段我喜欢的小说片段蒸馏成文风档案，放进卡里", "should_trigger": true},
+  {"query": "开场白写三条：雨夜重逢、醒来在他床上、宫宴上被当众指婚", "should_trigger": true},
+  {"query": "想给这张卡加个时停机制，用愿景炼化写成世界规则", "should_trigger": true},
+  {"query": "这张卡要好感度和信任度两个变量，按 MVU 流程做变量结构", "should_trigger": true},
+  {"query": "给角色卡做个美化状态栏，水墨风，显示时间地点和他的心声", "should_trigger": true},
+  {"query": "全部写完了，自检一下然后打包成能导入酒馆的 png", "should_trigger": true},
+  {"query": "继续写萧逸尘那张卡", "should_trigger": true},
+  {"query": "卡做完要发 DC 了，帮我写个发布介绍，标题要吸睛", "should_trigger": true},
+
+  {"query": "我有一部三十万字的灵异小说，想逐章拆解成设定档案和角色关系网", "should_trigger": false},
+  {"query": "帮我写一篇五千字的古风短篇小说，男女主先婚后爱", "should_trigger": false},
+  {"query": "帮我开发一个 SillyTavern 扩展插件，能在侧边栏管理世界书条目", "should_trigger": false},
+  {"query": "酒馆总是报 API 连接错误，怎么配置反向代理？", "should_trigger": false},
+  {"query": "推荐几个适合角色扮演的大模型，哪个文笔最好", "should_trigger": false},
+  {"query": "把这个 epub 转成 txt，按章节分文件", "should_trigger": false},
+  {"query": "帮我做一个个人博客网站的首页，要有暗色模式", "should_trigger": false},
+  {"query": "这段 Python 爬虫报错 403，帮我看看", "should_trigger": false},
+  {"query": "分析一下《红楼梦》里王熙凤的人物形象，写成论文段落", "should_trigger": false},
+  {"query": "帮我写一份 DND 跑团的怪物数据卡，CR 5 的", "should_trigger": false}
+]

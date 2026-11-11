@@ -1,0 +1,77 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* 变量更新折叠显示：折叠成一行「变量更新 · N 项」，点开逐条列出改动。配色按作品状态栏风格自行调整 :root 里的变量 */
+:root {
+  --ink-primary: #4a5e6a; --ink-secondary: #8a989f; --paper-bg: #f7f4ed;
+  --paper-border: #d3cec3; --accent-gold: #b59875; --accent-red: #a84646;
+  --font-main: 'Noto Serif SC', 'Songti SC', serif;
+}
+body { margin: 0; padding: 4px 0; background: transparent; font-family: var(--font-main); color: var(--ink-primary); font-size: 13px; line-height: 1.6; }
+.vu-raw { display: none; }
+.vu-box { width: 100%; box-sizing: border-box; background: rgba(247,244,237,0.85); border: 1px solid var(--paper-border); border-radius: 4px; }
+.vu-head { padding: 5px 12px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+.vu-head::before { content: '❖'; color: var(--accent-gold); margin-right: 6px; font-size: 0.85em; }
+.vu-title { flex: 1; font-weight: 700; letter-spacing: 1px; }
+.vu-count { color: var(--ink-secondary); font-weight: 400; margin-left: 4px; }
+.vu-toggle { color: var(--ink-secondary); font-size: 0.8em; transition: transform 0.3s ease; }
+.vu-box.open .vu-toggle { transform: rotate(180deg); color: var(--accent-red); }
+.vu-body { display: none; padding: 4px 12px 10px; border-top: 1px dashed var(--paper-border); }
+.vu-box.open .vu-body { display: block; }
+.vu-analysis { color: var(--ink-secondary); font-style: italic; font-size: 0.92em; margin: 4px 0 8px; white-space: pre-wrap; word-break: break-word; }
+.vu-row { display: flex; gap: 8px; padding: 3px 0; border-bottom: 1px dotted rgba(211,206,195,0.6); align-items: baseline; }
+.vu-row:last-child { border-bottom: none; }
+.vu-op { flex-shrink: 0; min-width: 2.2em; text-align: center; font-size: 0.85em; padding: 0 4px; border-radius: 3px; border: 1px solid var(--paper-border); }
+.vu-op.replace { color: var(--ink-primary); }
+.vu-op.delta { color: var(--accent-gold); border-color: var(--accent-gold); }
+.vu-op.insert { color: #4f7a5a; border-color: #9cb8a2; }
+.vu-op.remove { color: var(--accent-red); border-color: var(--accent-red); }
+.vu-op.move { color: var(--ink-secondary); }
+.vu-path { font-weight: 600; word-break: break-all; }
+.vu-val { color: var(--ink-primary); word-break: break-word; }
+.vu-val::before { content: '→ '; color: var(--ink-secondary); }
+.vu-plain { white-space: pre-wrap; word-break: break-word; font-size: 0.9em; }
+</style>
+</head>
+<body>
+<textarea class="vu-raw">$1</textarea>
+<div class="vu-box">
+  <div class="vu-head"><span class="vu-title">变量更新<span class="vu-count"></span></span><span class="vu-toggle">▼</span></div>
+  <div class="vu-body"></div>
+</div>
+<script>
+/* 解析 <UpdateVariable> 里的 <Analysis> 与 <JSONPatch>，逐条列出改了什么；JSON 解析失败时原样显示 */
+const raw = document.querySelector('.vu-raw').value;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const 路径 = p => String(p || '').split('/').filter(Boolean).map(x => x.replace(/~1/g, '/').replace(/~0/g, '~')).join('.').replace(/\.-$/, '（追加）');
+const 值 = v => (typeof v === 'string' ? v : JSON.stringify(v));
+const 名 = { replace: '改', delta: '±', insert: '增', remove: '删', move: '移', add: '增' };
+
+const analysis = (raw.match(/<Analysis>([\s\S]*?)<\/Analysis>/i) || [])[1];
+const patchText = (raw.match(/<JSONPatch>([\s\S]*?)<\/JSONPatch>/i) || [])[1];
+let html = analysis ? `<div class="vu-analysis">${esc(analysis.trim())}</div>` : '';
+let count = '';
+try {
+  const ops = JSON.parse((patchText || '').trim());
+  count = ` · ${ops.length} 项`;
+  html += ops.map(o => {
+    const op = String(o.op || '').toLowerCase();
+    const target = op === 'move' ? `${路径(o.from)} ⇢ ${路径(o.path || o.to)}` : 路径(o.path);
+    const v = op === 'delta' && Number(o.value) > 0 ? '+' + o.value : 值(o.value);
+    const val = op === 'remove' || op === 'move' ? '' : `<span class="vu-val">${esc(v)}</span>`;
+    return `<div class="vu-row"><span class="vu-op ${esc(op)}">${esc(名[op] || op)}</span><span class="vu-path">${esc(target)}</span>${val}</div>`;
+  }).join('');
+} catch (e) {
+  html += `<div class="vu-plain">${esc((patchText || raw).trim())}</div>`;
+}
+document.querySelector('.vu-count').textContent = count;
+document.querySelector('.vu-body').innerHTML = html;
+document.querySelector('.vu-head').addEventListener('click', () => document.querySelector('.vu-box').classList.toggle('open'));
+</script>
+</body>
+</html>
+```

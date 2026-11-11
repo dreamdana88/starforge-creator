@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星辰工坊开工表单</title>
+<style>
+:root {
+  --bg: #f6f3fb;
+  --bg-glow: #ece4fb;
+  --surface: #ffffff;
+  --surface-2: #faf8fe;
+  --text: #2a2438;
+  --text-2: #6c6480;
+  --border: #e3dcef;
+  --accent: #8a6cc8;
+  --accent-2: #c58fb4;
+  --accent-soft: #efe8fb;
+  --ok: #4f9a7a;
+  --warn: #b7791f;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17141f; --bg-glow: #221c33; --surface: #201b2b; --surface-2: #262035;
+    --text: #ece7f6; --text-2: #a59cba; --border: #362e48;
+    --accent: #b49ae8; --accent-2: #e0a9cd; --accent-soft: #2c2440;
+    --ok: #7cc4a3; --warn: #e2b05a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17141f; --bg-glow: #221c33; --surface: #201b2b; --surface-2: #262035;
+  --text: #ece7f6; --text-2: #a59cba; --border: #362e48;
+  --accent: #b49ae8; --accent-2: #e0a9cd; --accent-soft: #2c2440;
+  --ok: #7cc4a3; --warn: #e2b05a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: radial-gradient(circle at 15% 0%, var(--bg-glow), var(--bg) 55%);
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 32px 16px 64px;
+  min-height: 100vh;
+}
+.shell { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+nav { position: sticky; top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+nav .logo { font-weight: 700; font-size: 1.05em; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+nav p { font-size: .8em; color: var(--text-2); margin: 6px 0 14px; }
+nav a { display: flex; gap: 10px; padding: 7px 10px; border-radius: 9px; color: var(--text); text-decoration: none; font-size: .9em; }
+nav a:hover { background: var(--accent-soft); }
+nav a span { color: var(--accent); font-variant-numeric: tabular-nums; }
+nav .theme { margin-top: 14px; width: 100%; }
+main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+header h1 { font-size: 1.5em; }
+header p { color: var(--text-2); font-size: .92em; margin-top: 4px; }
+section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+section h2 { font-size: 1.05em; display: flex; gap: 10px; align-items: baseline; margin-bottom: 4px; }
+section h2 small { color: var(--accent); font-weight: 600; font-size: .78em; }
+section .desc { color: var(--text-2); font-size: .85em; margin-bottom: 14px; }
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field > label, .field > .label { display: block; font-size: .88em; font-weight: 600; margin-bottom: 6px; }
+.field .hint { font-weight: 400; color: var(--text-2); font-size: .92em; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+input[type=text], textarea, select {
+  width: 100%; font: inherit; font-size: .92em; color: var(--text);
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 8px 10px;
+}
+textarea { min-height: 72px; resize: vertical; }
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); font-size: .88em; cursor: pointer; user-select: none; }
+.chip:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.chip:has(input:disabled) { opacity: .7; cursor: default; }
+.chip input { accent-color: var(--accent); }
+.mods { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.mod { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); cursor: pointer; }
+.mod:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.mod input { margin-top: 4px; accent-color: var(--accent); }
+.mod b { font-size: .9em; display: block; }
+.mod small { color: var(--text-2); font-size: .78em; display: block; }
+.sub { margin: 10px 0 0 4px; padding-left: 12px; border-left: 2px solid var(--border); }
+.notice { font-size: .85em; padding: 10px 12px; border-radius: 9px; background: var(--accent-soft); color: var(--text); margin-top: 10px; }
+.notice.warn { border-left: 3px solid var(--warn); }
+.hidden { display: none !important; }
+aside.out { position: sticky; top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 48px); }
+.tabs { display: flex; gap: 6px; }
+.tabs button, .btn { font: inherit; font-size: .85em; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
+.tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); border: none; color: #fff; }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+pre { flex: 1; overflow: auto; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .78em; background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 12px; min-height: 240px; }
+.field-error { color: var(--warn); font-size: .85em; margin-top: -6px; }
+input[aria-invalid="true"] { outline: 2px solid var(--warn); outline-offset: -1px; }
+.status { font-size: .85em; padding: 10px 12px; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--border); }
+.status[data-status="success"] { border-color: var(--ok); }
+.status[data-status="failure"] { border-color: var(--warn); }
+.status ul { margin: 4px 0 0 18px; }
+.toast { font-size: .8em; color: var(--ok); min-height: 1.2em; }
+@media (max-width: 1080px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  nav, aside.out { position: static; max-height: none; }
+  nav .links { display: flex; flex-wrap: wrap; gap: 4px; }
+  pre { max-height: 480px; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav>
+    <div class="logo">✦ 星辰工坊</div>
+    <p>开工前填好，生成 CARD_CONFIG 与开工表，放进作品目录交给 AI。</p>
+    <div class="links">
+      <a href="#s1"><span>01</span>作品</a>
+      <a href="#s2"><span>02</span>创作定位</a>
+      <a href="#s3"><span>03</span>主角色</a>
+      <a href="#s4"><span>04</span>开关</a>
+      <a href="#s5"><span>05</span>法则</a>
+      <a href="#s6"><span>06</span>模块</a>
+    </div>
+    <button class="btn theme" id="themeBtn" type="button">切换深浅色</button>
+  </nav>
+
+  <main>
+    <header>
+      <h1>开工表单</h1>
+      <p>不确定的地方留空或选「未定」，AI 开工时会在必停点问你。草稿自动保存在本浏览器。</p>
+    </header>
+
+    <section id="s1">
+      <h2><small>01</small>作品</h2>
+      <p class="desc">作品名就是 <code>works/</code> 下的目录名。</p>
+      <div class="row">
+        <div class="field"><label for="workName">作品名</label><input type="text" id="workName" placeholder="例如：萧逸尘"></div>
+        <div class="field"><label for="cardName">卡名 <span class="hint">（酒馆中显示，空则同作品名）</span></label><input type="text" id="cardName"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="author">作者</label><input type="text" id="author"></div>
+        <div class="field"><label for="version">版本</label><input type="text" id="version" value="0.1.0"></div>
+        <div class="field"><label for="avatar">头像</label>
+          <select id="avatar"><option value="user">我会提供 头像.png</option><option value="placeholder">先用占位图</option></select></div>
+      </div>
+      <div class="field" id="avatarFileWrap"><label for="avatarFile">头像图片 <span class="hint">（可选，PNG；写入作品目录时一并复制为 头像.png，也可以之后自己放）</span></label>
+        <input type="file" id="avatarFile" accept="image/png"></div>
+      <p class="field-error hidden" id="nameError"></p>
+    </section>
+
+    <section id="s2">
+      <h2><small>02</small>创作定位</h2>
+      <p class="desc">对应开工表「作品总表」。</p>
+      <div class="field"><span class="label">创作类型</span>
+        <div class="chips" data-group="kind">
+          <label class="chip"><input type="checkbox" value="角色卡" checked>角色卡</label>
+          <label class="chip"><input type="checkbox" value="世界书">世界书</label>
+          <label class="chip"><input type="checkbox" value="NPC">NPC</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="source">创作来源</label>
+          <select id="source"><option value="原创">原创</option><option value="同人">同人</option></select></div>
+        <div class="field" id="origWrap"><label for="orig">原作 / 参考资料</label><input type="text" id="orig" placeholder="原著名、版本、时间节点"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="orientation">性向</label>
+          <select id="orientation"><option>未定</option><option>BG</option><option>GL</option><option>GB</option><option>BL</option><option>全性向</option><option>无 CP</option></select></div>
+        <div class="field"><label for="genre">题材</label><input type="text" id="genre" placeholder="古风江湖、现代都市、西幻……"></div>
+        <div class="field"><label for="scale">世界规模</label>
+          <select id="scale"><option>未定</option><option value="小">小（单一场景 / 日常）</option><option value="中">中（一座城、一个组织）</option><option value="大">大（多地域、多势力）</option></select></div>
+      </div>
+      <div class="field"><label for="core">核心要求 <span class="hint">（想要什么体验、必须有 / 绝对不要的东西）</span></label>
+        <textarea id="core" placeholder="例如：慢热的双向暗恋；他有双重身份；不要强制爱"></textarea></div>
+      <div class="field"><label for="gaze">女性凝视 <span class="hint">（可选：希望如何体现女主角的主体性，需要避开的套路）</span></label>
+        <textarea id="gaze"></textarea></div>
+    </section>
+
+    <section id="s3">
+      <h2><small>03</small>主角色</h2>
+      <p class="desc">角色描述栏最多放一位；多位主角色时，其余放世界书，并配角色列表做索引。</p>
+      <div class="field"><label for="leads">主角色名单 <span class="hint">（用逗号或顿号分隔，未定可留空）</span></label>
+        <input type="text" id="leads" placeholder="例如：萧逸尘、沈瑾言"></div>
+      <div class="field" id="placeOne"><label for="placeSingle">放在哪里</label>
+        <select id="placeSingle"><option value="desc">角色描述（多数人的习惯）</option><option value="wb">世界书绿灯</option></select></div>
+      <div class="field hidden" id="placeMany"><label for="placeMulti">多位主角色怎么放</label>
+        <select id="placeMulti"><option value="allwb">全部放世界书绿灯 + 角色列表（推荐）</option><option value="onedesc">挑一位放角色描述，其余世界书绿灯 + 角色列表</option></select>
+        <div class="sub hidden" id="pickWrap"><label for="pick" class="label">放角色描述的是</label><select id="pick"></select></div>
+      </div>
+    </section>
+
+    <section id="s4">
+      <h2><small>04</small>开关</h2>
+      <div class="row">
+        <div class="field"><label for="sheetMode">开工表</label>
+          <select id="sheetMode"><option>完整</option><option>精简</option><option>关闭</option></select></div>
+        <div class="field"><label for="pov">人称</label>
+          <select id="pov"><option>未定</option><option>第一人称</option><option>第二人称</option><option>第三人称</option></select></div>
+      </div>
+      <p class="desc">完整：每个任务开工前追加任务卡；精简：只填作品总表；关闭：不建开工表。</p>
+    </section>
+
+    <section id="s5">
+      <h2><small>05</small>法则</h2>
+      <div class="chips" data-group="rules">
+        <label class="chip"><input type="checkbox" value="生成规范" checked disabled>生成规范（常驻）</label>
+        <label class="chip"><input type="checkbox" value="女男平等" checked>女男平等</label>
+        <label class="chip"><input type="checkbox" value="炼金之艺-女" checked>炼金之艺·女</label>
+        <label class="chip"><input type="checkbox" value="炼金之艺-男" checked>炼金之艺·男</label>
+        <label class="chip"><input type="checkbox" value="人称">人称（{{user}} 全程第三人称）</label>
+        <label class="chip"><input type="checkbox" value="双语对白">双语对白</label>
+        <label class="chip"><input type="checkbox" value="同人特化" id="ruleFan">同人特化</label>
+      </div>
+    </section>
+
+    <section id="s6">
+      <h2><small>06</small>模块</h2>
+      <p class="desc">默认模块按推荐顺序进行；可选模块按需勾选，之后也可以随时点名追加。</p>
+      <div class="field"><span class="label">默认模块</span><div class="mods" id="coreMods"></div></div>
+      <div class="field"><span class="label">可选模块</span><div class="mods" id="optMods"></div>
+        <div class="sub hidden" id="mvuSub">
+          <div class="chips">
+            <label class="chip"><input type="checkbox" id="mvu4">MVU4 动态内容（EJS）</label>
+            <label class="chip"><input type="checkbox" id="mvu5" checked>MVU5 美化状态栏</label>
+          </div>
+          <div class="field" style="margin-top:10px"><label for="mvuShow">变量更新在聊天里</label>
+            <select id="mvuShow"><option>隐藏</option><option>折叠显示</option></select></div>
+        </div>
+        <div class="sub hidden" id="sbSub">
+          <div class="field"><label for="sbStyle">状态栏形式</label>
+            <select id="sbStyle"><option>未定</option><option>纯文字</option><option>美化</option></select></div>
+        </div>
+      </div>
+      <div class="notice warn hidden" id="extNotice"></div>
+    </section>
+  </main>
+
+  <aside class="out">
+    <div class="tabs"><button type="button" class="on" data-tab="config">CARD_CONFIG</button><button type="button" data-tab="sheet">开工表</button><button type="button" data-tab="progress">进度</button></div>
+    <pre id="preview"></pre>
+    <div class="actions">
+      <button type="button" class="btn primary" id="writeBtn">写入作品目录</button>
+      <button type="button" class="btn" id="copyBtn">复制当前页</button>
+      <button type="button" class="btn" id="dlBtn">下载全部</button>
+      <button type="button" class="btn" id="resetBtn">清空</button>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="status hidden" id="status"></div>
+    <p class="desc">「写入作品目录」：选择 <code>starforge-creator</code> 项目文件夹，自动建好 <code>works/&lt;作品名&gt;/</code>。浏览器不支持时用「下载全部」，手动放进去。然后对 AI 说：「新作品 &lt;作品名&gt;，开工表单已填好」。</p>
+  </aside>
+</div>
+
+<script>
+const CORE = [
+  ['主角色', '10_捏人-主角色', '主角色全档', true],
+  ['世界书', '20_创世-世界书', '世界书四层构建', true],
+  ['配角 / NPC', '11_捏人-配角', '配角与 NPC', false],
+  ['角色列表', '12_捏人-角色列表', '多角色卡推荐', false],
+  ['文风', '23_创世-文风', '文风档案', true],
+  ['开场白', '22_创世-开场白', '开场白', true],
+  ['自检', '90_自检', '固定', true, true],
+  ['打包', '99_打包', '固定', true, true],
+];
+const OPT = [
+  ['女主角人设', '13_捏人-user人设', '默认不进卡（玩卡用）'],
+  ['亲密档案', '14_捏人-nsfw', '随角色档案'],
+  ['线上人设', '15_捏人-线上人设', '随角色档案'],
+  ['剧情大纲', '21_创世-剧情大纲', '世界书'],
+  ['愿景炼化（机制规则）', '24_创世-愿景炼化', '世界书'],
+  ['if 线', '25_创世-if线', '世界书（默认关闭）'],
+  ['角色访谈室', '16_捏人-访谈室', '不进卡'],
+  ['主题曲', '17_捏人-主题曲', '附件'],
+  ['小剧场', '26_创世-小剧场', '附件'],
+  ['画像提示词', '27_创世-画像', '附件'],
+  ['发布介绍', '28_创世-发布介绍', '附件'],
+  ['MVU 变量系统', 'mvu', '脚本 + 世界书 + 正则'],
+  ['状态栏（不用 MVU）', '35_状态栏', '世界书 + 正则'],
+  ['QR 快速回复', '40_QR', '附件（手动建 QR）'],
+  ['首页美化', '41_首页美化', '第一条消息 + 正则'],
+];
+const RULES = [
+  ['生成规范', '✅（常驻，不可关）'],
+  ['女男平等', ''], ['炼金之艺-女', ''], ['炼金之艺-男', ''],
+  ['人称', '（{{user}} 全程第三人称时启用）'],
+  ['双语对白', '（外语背景角色时可启用）'],
+  ['同人特化', '（同人作品必须启用）'],
+];
+const RULE_LABEL = { '炼金之艺-女': '炼金之艺·女（女性主权）', '炼金之艺-男': '炼金之艺·男' };
+const $ = id => document.getElementById(id);
+const KEY = 'starforge-kickoff-form';
+
+function modCard(m, i, group) {
+  const [name, file, note, on, locked] = m;
+  return `<label class="mod"><input type="checkbox" data-${group}="${i}" ${on ? 'checked' : ''} ${locked ? 'disabled' : ''}>` +
+    `<span><b>${name}</b><small>${file === 'mvu' ? 'prompts/30–34' : file} · ${note}</small></span></label>`;
+}
+$('coreMods').innerHTML = CORE.map((m, i) => modCard(m, i, 'core')).join('');
+$('optMods').innerHTML = OPT.map((m, i) => modCard(m, i, 'opt')).join('');
+
+const cell = s => (s || '').trim().replace(/\|/g, '／').replace(/\n+/g, '<br>');
+const blank = s => cell(s) || '＿＿＿＿';
+const box = b => b ? '☑' : '□';
+const tick = b => b ? '✅' : '⬜';
+const leads = () => $('leads').value.split(/[,，、\s]+/).map(s => s.trim()).filter(Boolean);
+const optOn = name => document.querySelector(`[data-opt="${OPT.findIndex(m => m[0] === name)}"]`).checked;
+const coreBox = name => document.querySelector(`[data-core="${CORE.findIndex(m => m[0] === name)}"]`);
+const ruleOn = v => document.querySelector(`[data-group="rules"] input[value="${v}"]`).checked;
+
+function placement() {
+  const L = leads();
+  if (!L.length) return '未定';
+  if (L.length === 1) return $('placeSingle').value === 'desc' ? `${L[0]} → 角色描述` : `${L[0]} → 世界书绿灯`;
+  if ($('placeMulti').value === 'allwb') return `${L.join('、')} → 世界书绿灯 + 角色列表`;
+  const p = $('pick').value || L[0];
+  return `${p} → 角色描述；${L.filter(x => x !== p).join('、')} → 世界书绿灯 + 角色列表`;
+}
+
+function extensions() {
+  const need = new Set();
+  if (optOn('MVU 变量系统')) { need.add('酒馆助手'); if ($('mvu4').checked) need.add('提示词模板（ST-Prompt-Template）'); }
+  if (optOn('状态栏（不用 MVU）') && $('sbStyle').value === '美化') need.add('酒馆助手');
+  if (optOn('首页美化')) need.add('酒馆助手');
+  return [...need];
+}
+
+function buildConfig() {
+  const work = $('workName').value.trim() || '${作品名}';
+  const ext = extensions();
+  const mvu = optOn('MVU 变量系统');
+  const L = [];
+  L.push(`# CARD_CONFIG：${work}`, '', '> 本作品的开关与基础信息。创作思路写在 `开工表.md`，这里只放「做什么、开什么」。', '> 由开工表单生成；之后直接改本文件。', '');
+  L.push('## 基础信息', '', '| 项 | 值 |', '|---|---|');
+  L.push(`| 卡名（酒馆中显示） | ${cell($('cardName').value) || cell($('workName').value)} |`);
+  L.push(`| 作者 | ${cell($('author').value)} |`);
+  L.push(`| 版本 | ${cell($('version').value) || '0.1.0'} |`);
+  L.push(`| 头像 | ${$('avatar').value === 'user' ? '☑ 女主角提供 `头像.png`　□ 占位图（发布前替换）' : '□ 女主角提供 `头像.png`　☑ 占位图（发布前替换）'} |`);
+  L.push(`| 需要的扩展 | ${ext.length ? ext.join('、') : '无'} |`, '');
+  L.push('## 开关', '', '| 项 | 选项 | 当前 |', '|---|---|---|');
+  L.push(`| 开工表 | 完整 / 精简 / 关闭 | ${$('sheetMode').value} |`);
+  L.push(`| 人称 | 第一人称 / 第二人称 / 第三人称 / 未定 | ${$('pov').value} |`);
+  L.push(`| 主角色入卡 | 角色描述最多放一位 | ${cell(placement())} |`);
+  L.push(`| MVU 变量更新显示 | 隐藏 / 折叠显示（启用 MVU 时才有意义） | ${mvu ? $('mvuShow').value : '隐藏'} |`, '');
+  L.push('## 法则', '', '| 法则 | 文件 | 启用 |', '|---|---|---|');
+  for (const [r, note] of RULES) {
+    const on = r === '生成规范' || ruleOn(r);
+    L.push(`| ${RULE_LABEL[r] || r} | \`rules/${r}.md\` | ${r === '生成规范' ? note : tick(on) + (on ? '' : note)} |`);
+  }
+  L.push('', '## 模块', '', '按推荐顺序排列。进度跟踪在 `进度.md`。', '', '| 模块 | prompt | 启用 |', '|---|---|---|');
+  CORE.forEach((m, i) => L.push(`| ${m[0]} | \`prompts/${m[1]}.md\` | ${tick(document.querySelector(`[data-core="${i}"]`).checked)}${m[0] === '角色列表' ? '（多角色卡推荐）' : ''} |`));
+  L.push('', '### 可选模块', '', '| 模块 | prompt | 进卡 | 启用 |', '|---|---|---|---|');
+  OPT.forEach((m, i) => {
+    const on = document.querySelector(`[data-opt="${i}"]`).checked;
+    let file = `\`prompts/${m[1]}.md\``, extra = '';
+    if (m[1] === 'mvu') {
+      file = '`prompts/30`–`34`（MVU4 动态内容可选）';
+      if (on) extra = `（MVU4 ${$('mvu4').checked ? '做' : '不做'}；MVU5 ${$('mvu5').checked ? '做' : '不做'}）`;
+    }
+    if (m[1] === '35_状态栏' && on) extra = `（${$('sbStyle').value}）`;
+    L.push(`| ${m[0]} | ${file} | ${m[2]} | ${tick(on)}${extra} |`);
+  });
+  return L.join('\n') + '\n';
+}
+
+function buildSheet() {
+  if ($('sheetMode').value === '关闭') return '（开工表开关为「关闭」，不生成开工表。）\n';
+  const work = $('workName').value.trim() || '${作品名}';
+  const kinds = [...document.querySelectorAll('[data-group="kind"] input')].map(i => [i.value, i.checked]);
+  const fan = $('source').value === '同人';
+  const Ls = leads();
+  const mods = [...CORE.filter((m, i) => document.querySelector(`[data-core="${i}"]`).checked && !m[4]),
+                ...OPT.filter((m, i) => document.querySelector(`[data-opt="${i}"]`).checked)]
+    .map(m => m[1] === 'mvu' ? 'MVU 30–34' : m[1]);
+  const rules = RULES.map(r => r[0]).filter(r => r !== '生成规范' && ruleOn(r));
+  const core = [$('core').value.trim(), $('orientation').value !== '未定' ? `性向：${$('orientation').value}` : '', $('genre').value.trim() ? `题材：${$('genre').value.trim()}` : ''].filter(Boolean).join('\n');
+  const L = [];
+  L.push(`# 开工表：${work}`, '', `> 由开工表单生成。开关：${$('sheetMode').value}。AI 开工时只补空白处，并把自己的理解写在旁边供女主角核对。`);
+  L.push('> 任务卡由 AI 在每个模块开工前追加（格式见 `templates/开工表-template.md`）。', '', '填写空白处，适用选项勾选即可；没有的内容填“无”。', '', '---', '', '## 作品总表', '');
+  L.push('| 模块 | 填写项 | 填写内容 |', '|---|---|---|');
+  L.push(`| 创作定位 | 创作类型 | ${kinds.map(([v, c]) => `${box(c)} ${v}`).join('　')}　□ 其他：＿＿＿＿ |`);
+  L.push(`| 创作定位 | 创作来源 | ${box(!fan)} 原创　${box(fan)} 同人；原作／参考资料：${fan ? blank($('orig').value) : '无'} |`);
+  L.push(`| 创作定位 | 核心要求 | 女主角明确提出的要求：${blank(core)} |`);
+  L.push(`| 创作定位 | 规模判定 | 角色复杂度：${Ls.length ? `主角色 ${Ls.length} 位（${Ls.join('、')}）` : '＿＿＿＿'}；世界规模／层级：${$('scale').value === '未定' ? '＿＿＿＿' : $('scale').value} |`);
+  L.push(`| 创作定位 | 模板与规范 | 需要调用的（创世/捏人）模板：${mods.join('、') || '＿＿＿＿'}；写作（法则/知识库）规范：${['生成规范', ...rules].join('、')} |`);
+  L.push(`| 规范调用 | 适用准则 | ${box(ruleOn('炼金之艺-女') || ruleOn('炼金之艺-男'))} 炼金之艺　${box(ruleOn('炼金之艺-女'))} 女性主权　${box(ruleOn('女男平等'))} 女男平等；具体适用要求：＿＿＿＿ |`);
+  L.push(`| 规范调用 | 女性凝视 | ${cell($('gaze').value) ? cell($('gaze').value) : '如何体现女性主体性：＿＿＿＿；需要避免的客体化与刻板印象：＿＿＿＿'} |`);
+  return L.join('\n') + '\n';
+}
+
+function buildProgress() {
+  const work = $('workName').value.trim() || '${作品名}';
+  const L = [];
+  L.push(`# 进度：${work}`, '', '> 每完成一步就更新本文件。新会话接手时，先读这里，再读 `开工表.md`。', '', '## 当前', '');
+  L.push('- 下一步：00 开工（核对开工表单，进入必停点 ① 澄清）', '- 等待女主角：无', '', '## 模块', '');
+  L.push('| 模块 | 状态 | 产物 | 备注 |', '|---|---|---|---|');
+  L.push('| 00 开工 | 🟡 | `CARD_CONFIG.md`、`开工表.md` | 开工表单已填，待 AI 核对 |');
+  CORE.forEach((m, i) => { if (document.querySelector(`[data-core="${i}"]`).checked && !m[4]) L.push(`| ${m[1].replace('_', ' ')} | ⬜ | | |`); });
+  OPT.forEach((m, i) => { if (document.querySelector(`[data-opt="${i}"]`).checked) L.push(`| ${m[1] === 'mvu' ? '30–34 MVU' : m[1].replace('_', ' ')} | ⬜ | | |`); });
+  L.push('| 90 自检 | ⬜ | | |', '| 99 打包 | ⬜ | | |', '', '状态：⬜ 未开始 / 🟡 进行中（停在必停点时写明在等什么）/ ✅ 完成 / ➖ 不做', '', '## 打包记录', '', '| 版本 | 日期 | 说明 |', '|---|---|---|');
+  return L.join('\n') + '\n';
+}
+
+/* 作品名就是目录名，不能含 Windows 路径非法字符 */
+function validateName() {
+  const v = $('workName').value.trim();
+  const msg = !v ? '请先填作品名'
+    : /[\\/:*?"<>|]/.test(v) ? '作品名不能包含 \\ / : * ? " < > |'
+    : /^[._]/.test(v) ? '作品名不要以 . 或 _ 开头（_ 开头留给测试卡）' : '';
+  $('nameError').textContent = msg;
+  $('nameError').classList.toggle('hidden', !msg);
+  $('workName').setAttribute('aria-invalid', msg ? 'true' : 'false');
+  return !msg;
+}
+
+function files() {
+  const out = [['CARD_CONFIG.md', buildConfig()], ['进度.md', buildProgress()]];
+  if ($('sheetMode').value !== '关闭') out.splice(1, 0, ['开工表.md', buildSheet()]);
+  return out;
+}
+
+function showStatus(kind, title, items = []) {
+  const el = $('status');
+  el.classList.remove('hidden');
+  el.dataset.status = kind;
+  el.textContent = title;
+  if (items.length) {
+    const ul = document.createElement('ul');
+    items.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+    el.appendChild(ul);
+  }
+}
+
+async function exists(dir, name, kind = 'file') {
+  try { kind === 'file' ? await dir.getFileHandle(name) : await dir.getDirectoryHandle(name); return true; }
+  catch (e) { return false; }
+}
+async function writeFile(dir, name, data) {
+  const h = await dir.getFileHandle(name, { create: true });
+  const w = await h.createWritable();
+  await w.write(data);
+  await w.close();
+}
+async function readText(dir, name) { return (await (await dir.getFileHandle(name)).getFile()).text(); }
+
+async function writeToProject() {
+  if (!validateName()) { $('workName').focus(); return; }
+  if (!window.showDirectoryPicker) {
+    showStatus('failure', '这个浏览器不支持直接写入文件夹（需要 Chrome 或 Edge）。请用「下载全部」，再手动放进 works/<作品名>/。');
+    return;
+  }
+  let root;
+  try { root = await showDirectoryPicker({ mode: 'readwrite' }); }
+  catch (e) { if (e.name !== 'AbortError') showStatus('failure', '没能打开文件夹：' + e.message); return; }
+  let works;
+  if (root.name === 'works') works = root;
+  else if (await exists(root, 'works', 'dir') || await exists(root, 'AGENTS.md')) works = await root.getDirectoryHandle('works', { create: true });
+  else { showStatus('failure', `「${root.name}」不像星辰工坊项目文件夹（里面没有 works/ 或 AGENTS.md）。请选择 starforge-creator 文件夹。`); return; }
+
+  const name = $('workName').value.trim();
+  const done = [], kept = [];
+  try {
+    const isNew = !(await exists(works, name, 'dir'));
+    const dir = await works.getDirectoryHandle(name, { create: true });
+    const list = files();
+    const clash = [];
+    for (const [fn] of list) if (fn !== '进度.md' && await exists(dir, fn)) clash.push(fn);
+    if (clash.length && !confirm(`works/${name}/ 里已有 ${clash.join('、')}。\n替换它们吗？旧文件会备份为 .bak 文件。`)) {
+      showStatus('idle', '已取消，没有写入任何文件。');
+      return;
+    }
+    const stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12);
+    for (const fn of clash) {
+      const bak = fn.replace(/\.md$/, `.bak-${stamp}.md`);
+      await writeFile(dir, bak, await readText(dir, fn));
+      done.push(`备份 ${fn} → ${bak}`);
+    }
+    for (const [fn, text] of list) {
+      if (fn === '进度.md' && await exists(dir, fn)) { kept.push('进度.md 已存在，保留原文件不覆盖'); continue; }
+      await writeFile(dir, fn, text);
+      done.push(`写入 ${fn}`);
+    }
+    for (const sub of ['角色', '世界书', '第一条消息', '附件']) await dir.getDirectoryHandle(sub, { create: true });
+    if (isNew) done.push('新建 角色/ 世界书/ 第一条消息/ 附件/');
+    const img = $('avatarFile').files[0];
+    if (img) {
+      if (img.type !== 'image/png') kept.push('头像不是 PNG，未复制');
+      else { await writeFile(dir, '头像.png', img); done.push('复制头像 → 头像.png'); }
+    }
+    showStatus('success', `已写入 works/${name}/。对 AI 说：「新作品 ${name}，开工表单已填好」。`, [...done, ...kept]);
+  } catch (e) {
+    showStatus('failure', '写入中断：' + e.message + (done.length ? '。已经完成的部分：' : ''), done);
+  }
+}
+
+let tab = 'config';
+function sync() {
+  const L = leads();
+  $('origWrap').classList.toggle('hidden', $('source').value !== '同人');
+  $('placeOne').classList.toggle('hidden', L.length > 1);
+  $('placeMany').classList.toggle('hidden', L.length <= 1);
+  $('pickWrap').classList.toggle('hidden', $('placeMulti').value !== 'onedesc');
+  const cur = $('pick').value;
+  $('pick').innerHTML = L.map(n => `<option ${n === cur ? 'selected' : ''}>${n.replace(/</g, '&lt;')}</option>`).join('');
+  $('mvuSub').classList.toggle('hidden', !optOn('MVU 变量系统'));
+  $('sbSub').classList.toggle('hidden', !optOn('状态栏（不用 MVU）'));
+  const ext = extensions();
+  $('extNotice').classList.toggle('hidden', !ext.length);
+  $('extNotice').textContent = `玩家需要安装：${ext.join('、')}。导入卡时要允许运行卡内脚本。`;
+  $('avatarFileWrap').classList.toggle('hidden', $('avatar').value !== 'user');
+  if ($('workName').getAttribute('aria-invalid') === 'true') validateName();
+  $('preview').textContent = tab === 'config' ? buildConfig() : tab === 'sheet' ? buildSheet() : buildProgress();
+  save();
+}
+
+/* 同人自动启用同人特化；多位主角色自动勾角色列表 */
+$('source').addEventListener('change', () => { if ($('source').value === '同人') $('ruleFan').checked = true; });
+$('leads').addEventListener('change', () => { if (leads().length > 1) coreBox('角色列表').checked = true; sync(); });
+
+function fields() { return [...document.querySelectorAll('input, select, textarea')].filter(e => !e.disabled && e.type !== 'file'); }
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(fields().map(e => e.type === 'checkbox' ? e.checked : e.value))); } catch (e) {}
+}
+function load() {
+  try {
+    const v = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (!v) return;
+    const f = fields();
+    /* 先恢复主角色名单，生成下拉选项后再恢复其余字段 */
+    $('leads').value = v[f.indexOf($('leads'))] ?? '';
+    sync();
+    f.forEach((e, i) => { if (v[i] === undefined) return; e.type === 'checkbox' ? (e.checked = v[i]) : (e.value = v[i]); });
+  } catch (e) {}
+}
+
+document.addEventListener('input', sync);
+document.addEventListener('change', sync);
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+  tab = b.dataset.tab;
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  sync();
+}));
+function toast(t) { $('toast').textContent = t; setTimeout(() => { $('toast').textContent = ''; }, 2000); }
+$('copyBtn').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText($('preview').textContent); toast('已复制'); }
+  catch (e) { toast('复制失败，请手动选中复制'); }
+});
+$('dlBtn').addEventListener('click', () => {
+  if (!validateName()) { $('workName').focus(); return; }
+  for (const [name, text] of files()) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: 'text/markdown' }));
+    a.download = name; a.click(); URL.revokeObjectURL(a.href);
+  }
+  toast('已下载，放进 works/<作品名>/');
+});
+$('writeBtn').addEventListener('click', () => { writeToProject(); });
+$('resetBtn').addEventListener('click', () => {
+  if (!confirm('清空所有填写内容？')) return;
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  location.reload();
+});
+$('themeBtn').addEventListener('click', () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+});
+
+load();
+sync();
+</script>
+</body>
+</html>

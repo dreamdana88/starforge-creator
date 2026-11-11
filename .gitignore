@@ -1,0 +1,10 @@
+# 作品在每台机器本地生成，不进仓库
+works/
+
+node_modules/
+package-lock.json
+
+*.pyc
+__pycache__/
+.DS_Store
+Thumbs.db
